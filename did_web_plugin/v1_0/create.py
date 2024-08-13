@@ -5,22 +5,16 @@ from aiohttp import web
 from aiohttp_apispec import docs, request_schema, response_schema
 from aries_cloudagent.admin.request_context import AdminRequestContext
 from aries_cloudagent.messaging.models.openapi import OpenAPISchema
-from aries_cloudagent.messaging.valid import (
-    DID_POSTURE_EXAMPLE,
-    DID_POSTURE_VALIDATE,
-    GENERIC_DID_EXAMPLE,
-    GENERIC_DID_VALIDATE,
-    INDY_RAW_PUBLIC_KEY_EXAMPLE,
-    INDY_RAW_PUBLIC_KEY_VALIDATE,
-)
+from aries_cloudagent.messaging.valid import (DID_POSTURE_EXAMPLE,
+                                              DID_POSTURE_VALIDATE,
+                                              GENERIC_DID_EXAMPLE,
+                                              GENERIC_DID_VALIDATE,
+                                              INDY_RAW_PUBLIC_KEY_EXAMPLE,
+                                              INDY_RAW_PUBLIC_KEY_VALIDATE)
 from aries_cloudagent.wallet.base import BaseWallet, WalletError
 from aries_cloudagent.wallet.did_info import DIDInfo
-from aries_cloudagent.wallet.did_method import (
-    PEER2,
-    PEER4,
-    DIDMethods,
-    HolderDefinedDid,
-)
+from aries_cloudagent.wallet.did_method import (PEER2, PEER4, DIDMethods,
+                                                HolderDefinedDid)
 from aries_cloudagent.wallet.did_posture import DIDPosture
 from aries_cloudagent.wallet.key_type import BLS12381G2, ED25519, KeyTypes
 from marshmallow import fields, validate
@@ -46,7 +40,7 @@ def format_did_info(info: DIDInfo):
         }
 
 
-class DIDSchemaPlugin(OpenAPISchema):
+class DidSchemaPlugin(OpenAPISchema):
     """Result schema for a DID."""
 
     did = fields.Str(
@@ -94,13 +88,13 @@ class DIDSchemaPlugin(OpenAPISchema):
     )
 
 
-class DIDResultSchemaPlugin(OpenAPISchema):
+class DidResultSchemaPlugin(OpenAPISchema):
     """Result schema for a DID."""
 
-    result = fields.Nested(DIDSchemaPlugin())
+    result = fields.Nested(DidSchemaPlugin())
 
 
-class DIDCreateOptionsSchemaPlugin(OpenAPISchema):
+class DidCreateOptionsSchemaPlugin(OpenAPISchema):
     """Parameters and validators for create DID options."""
 
     key_type = fields.Str(
@@ -128,7 +122,7 @@ class DIDCreateOptionsSchemaPlugin(OpenAPISchema):
     )
 
 
-class DIDCreateSchemaPlugin(OpenAPISchema):
+class DidCreateSchemaPlugin(OpenAPISchema):
     """Parameters and validators for create DID endpoint."""
 
     method = fields.Str(
@@ -144,7 +138,7 @@ class DIDCreateSchemaPlugin(OpenAPISchema):
     )
 
     options = fields.Nested(
-        DIDCreateOptionsSchemaPlugin,
+        DidCreateOptionsSchemaPlugin,
         required=False,
         metadata={
             "description": (
@@ -166,8 +160,8 @@ class DIDCreateSchemaPlugin(OpenAPISchema):
 
 
 @docs(tags=["wallet"], summary="Create a local DID")
-@request_schema(DIDCreateSchemaPlugin())
-@response_schema(DIDResultSchemaPlugin, 200, description="")
+@request_schema(DidCreateSchemaPlugin())
+@response_schema(DidResultSchemaPlugin, 200, description="")
 async def plugin_create_did(request: web.BaseRequest):
     """Request handler for creating a new local DID in the wallet.
 
@@ -259,8 +253,8 @@ async def plugin_create_did(request: web.BaseRequest):
 
 
 @docs(tags=["wallet"], summary="Create a new DID")
-@request_schema(DIDCreateSchemaPlugin())
-@response_schema(DIDResultSchemaPlugin, 200, description="")
+@request_schema(DidCreateSchemaPlugin())
+@response_schema(DidResultSchemaPlugin, 200, description="")
 async def plugin_new_did(request: web.BaseRequest):
     """Request handler for creating a new DID in the wallet.
 
